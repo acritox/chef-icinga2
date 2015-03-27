@@ -1110,7 +1110,7 @@ LWRP `checkcommand` creates an icinga `CheckCommand` object.
 **LWRP CheckCommand example**
 
 	icinga2_checkcommand 'checkcommand' do
-	  command 'command name'
+	  command '[ PluginDir + "/command_name" ]'
 	  env :attribute => 'value'
 	  arguments :attribute => 'value'
 	  custom_vars :attribute => 'value'
