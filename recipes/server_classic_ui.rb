@@ -20,22 +20,28 @@
 case node['platform_family']
 when 'debian'
   package 'icinga2-classicui' do
-    version node['icinga2']['classic_ui']['version'] + node['icinga2']['icinga2_version_suffix']
+    version node['icinga2']['classic_ui']['version'] + node['icinga2']['icinga2_version_suffix'] unless node['icinga2']['ignore_version']
   end
 when 'rhel'
   package 'icinga2-classicui-config' do
-    version node['icinga2']['classic_ui']['version'] + node['icinga2']['icinga2_version_suffix']
+    version node['icinga2']['classic_ui']['version'] + node['icinga2']['icinga2_version_suffix'] unless node['icinga2']['ignore_version']
   end
 
   package 'icinga-gui' do
-    version node['icinga2']['classic_ui']['gui_version'] + node['icinga2']['icinga2_version_suffix']
+    version node['icinga2']['classic_ui']['gui_version'] + node['icinga2']['icinga2_version_suffix'] unless node['icinga2']['ignore_version']
   end
 end
 
 directory node['icinga2']['classic_ui']['log_dir'] do
-  owner 'root'
-  group 'root'
+  owner node['icinga2']['user']
+  group node['icinga2']['cmdgroup']
   mode 0755
+end
+
+directory node['icinga2']['classic_ui']['cgi_log_dir'] do
+  owner node['icinga2']['user']
+  group node['icinga2']['cmdgroup']
+  mode 02775
 end
 
 template ::File.join(node['icinga2']['classic_ui']['conf_dir'], 'cgi.cfg') do

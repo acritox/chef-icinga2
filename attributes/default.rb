@@ -1,6 +1,7 @@
 # http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/getting-started#getting-started
 
-default['icinga2']['version'] = '2.3.2-1'
+default['icinga2']['version'] = '2.3.4-1'
+default['icinga2']['ignore_version'] = false
 default['icinga2']['cookbook'] = 'icinga2'
 default['icinga2']['conf_dir'] = '/etc/icinga2'
 default['icinga2']['conf_d_dir'] = ::File.join(node['icinga2']['conf_dir'], 'conf.d')
@@ -39,6 +40,9 @@ default['icinga2']['enable_application_hostgroup'] = true
 default['icinga2']['enable_role_hostgroup'] = false
 default['icinga2']['limit_region'] = true
 
+# host attribute to use for Host Object
+# attribute display_name in LWRP environment
+default['icinga2']['host_display_name_attr'] = 'hostname'
 default['icinga2']['use_fqdn_resolv'] = false
 default['icinga2']['failover_fqdn_address'] = true
 default['icinga2']['ignore_node_error'] = false

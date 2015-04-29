@@ -12,8 +12,8 @@ object Host <%= node_hash['fqdn'].inspect %> {
   <%- if @import -%>
   import <%= @import.inspect %>
   <%- end -%>
-  <%- if node_hash['hostname'] -%>
-  display_name = <%= node_hash['hostname'].inspect %>
+  <%- if @host_display_name_attr && node_hash[@host_display_name_attr] -%>
+  display_name = <%= node_hash[@host_display_name_attr].inspect %>
   <%- end -%>
   <%- if node_hash['address'] -%>
   address = <%= node_hash['address'].inspect %>
@@ -89,7 +89,21 @@ object Host <%= node_hash['fqdn'].inspect %> {
   <%- end -%>
   <% if node_hash['custom_vars'] -%>
   <% Hash[node_hash['custom_vars'].sort].each do |var, value| -%>
-  <% if var && value -%>
+  <% if var && value && value.is_a?(Hash) -%>
+  <% value.each do |a, v|-%>
+  <% if a && v && v.is_a?(Hash) && !v.empty?-%>
+  vars.<%= var -%><%= [a].inspect -%> = {
+  <% v.each do |a1, v1|%>
+  <% if a1 && v1 %>
+  <%= a1 -%> = <%= v1.inspect %>
+  <% end -%>
+  <% end -%>
+  }
+  <% else -%>
+  vars.<%= var -%><%= [a].inspect -%> = <%= v.inspect %>
+  <% end -%>
+  <% end -%>
+  <% elsif var && value -%>
   vars.<%= var -%> = <%= value.inspect %>
   <% end -%>
   <% end -%>

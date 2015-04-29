@@ -83,6 +83,12 @@ module Icinga2
       roles = []
       recipes = []
       results.each do |node|
+        # skip node if set not to monitor
+        if node['monitoring_off'] == true
+          Chef::Log.warn("#{node.name} is set to turn off the monitoring, node ignored")
+          next
+        end
+
         node_hash = convert_node(node)
 
         # match node attributes to given env attributes
@@ -91,12 +97,6 @@ module Icinga2
             Chef::Log.warn("node#{k}=#{node_hash[k]} does not match with env_filter_node_vars[#{k}]=#{env_filter_node_vars[k]}, node ignored")
             next
           end
-        end
-
-        # skip node if set not to monitor
-        if node['monitoring_off'] == true
-          Chef::Log.warn("#{node_hash['name']} is set to turn off the monitoring, node ignored")
-          next
         end
 
         # check server region with node region
@@ -203,7 +203,9 @@ module Icinga2
 
       # not required, keeping it for the moment
       node_hash['custom_vars']['tags'] = node_hash['tags']
-      node_hash['custom_vars']['disks'] = node_hash['disks']
+
+      # https://github.com/Icinga/icinga2/blob/master/doc/3-monitoring-basics.md
+      node_hash['custom_vars']['disks'] = { 'mounts' => { 'disk_partitions' => node_hash['disks'] } }
 
       # remote_client for remote checks
       node_hash['custom_vars']['remote_client'] = node['fqdn']
@@ -235,7 +237,7 @@ module Icinga2
           node_hash['custom_vars']['node_type'] = node['ec2']['instance_type']
           node_hash['custom_vars']['node_zone'] = node['ec2']['placement_availability_zone']
           node_hash['custom_vars']['node_region'] = node['ec2']['placement_availability_zone'].chop
-          node_hash['custom_vars']['node_security_groups'] = node['ec2']['security_groups']
+          node_hash['custom_vars']['node_security_groups'] = node['ec2']['security_groups'].sort.uniq if node['ec2']['security_groups'].is_a?(Array)
           node_hash['custom_vars']['node_wan_address'] = node['ec2']['public_ipv4'].to_s
 
           node['ec2']['network_interfaces_macs'].each do |_net, net_options|
