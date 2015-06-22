@@ -38,7 +38,7 @@ For issue reporting or any discussion regarding this cookbook, open an issue at 
 
 ## TODO
 
-* classic ui setup is incomplete for ubuntu/debian platform
+* add icinga2 web2 configuration support
 * add chef node zone/endpoint objects for icinga2 agent setup
 * add lwrp envendpoint / envzone lwrp for environment resource
 
@@ -735,7 +735,7 @@ LWRP `hostgroup` creates an icinga `HostGroup` object.
 **LWRP HostGroup example**
 
 	icinga2_hostgroup 'hostgroup_name' do
-	  disaply_name 'Host Group'
+	  display_name 'Host Group'
 	  groups ['othergroup']
 	  assign_where ['"hostgroup_name" in host.vars.hostgroups']
 	  ignore_where ['"hostgroup_name" in host.vars.hostgroups']
@@ -839,12 +839,28 @@ LWRP `service` creates an icinga `Service` object or template.
 
 Above LWRP resource will apply an icinga `Service` object to all `Hosts` with custom vars `host.vars.nrpe`.
 
+**LWRP Apply Service For Object example**
+
+	icinga2_applyservice 'areca' do
+    set 'areca => config in host.vars.areca'
+	  display_name '"areca raidset" + areca'
+	  import 'generic-service'
+	  check_command 'check_snmp'
+	  assign_where ['"areca" in host.vars.enabled_services']
+	  check_interval '5m'
+	  retry_interval '3m'
+	  max_check_attempts 2
+	end
+
+Above LWRP resource will apply an icinga `Service` object with a Service for set (also called hash or dictionary) to all `Hosts` with custom vars `host.vars.enabled_services` including 'areca'.
+
 
 **LWRP Options**
 
 
 - *action* (optional)	- default :create, options: :create, :delete, :reload
 - *display_name* (optional, String)	- icinga `Service` object attribute `display_name`
+- *set* (optional, String) - gives a set (hash/dictionary) to the icinga `service` object
 - *import* (optional, String)	- icinga `Service` object attribute `import`
 - *host_name* (optional, String)	- icinga `Service` object attribute `host_name`
 - *groups* (optional, Array)	- icinga `Service` object attribute `groups`
@@ -883,7 +899,7 @@ LWRP `servicegroup` creates an icinga `ServiceGroup` object.
 **LWRP ServiceGroup example**
 
 	icinga2_servicegroup 'servicegroup_name' do
-	  disaply_name 'Service Group'
+	  display_name 'Service Group'
 	  groups ['othergroup']
 	  assign_where ['"servicegroup_name" in host.vars.servicegroups']
 	  ignore_where ['"servicegroup_name" in host.vars.servicegroups']
@@ -982,7 +998,7 @@ LWRP `usergroup` creates an icinga `UserGroup` object.
 **LWRP UserGroup example**
 
 	icinga2_usergroup 'usergroup_name' do
-	  disaply_name 'User Group'
+	  display_name 'User Group'
 	  groups ['usergroup']
 	  zone 'zone_name'
 	end
@@ -1030,7 +1046,7 @@ LWRP `endpoint` creates an icinga `Endpoint` object.
 
 	icinga2_endpoint 'endpoint' do
 	  host 'host address'
-	  port 'port'
+	  port 1234
 	  log_duration 'log duration'
 	end
 
@@ -1208,7 +1224,7 @@ LWRP `gelfwriter` creates an icinga `GelfWriter` object.
 	icinga2_gelfwriter 'gelfwriter' do
 	  library 'library'
 	  host 'host address'
-	  port 'port'
+	  port 1234
 	  source 'source'
 	end
 
@@ -1234,7 +1250,7 @@ LWRP `graphitewriter` creates an icinga `GraphiteWriter` object.
 	icinga2_graphitewriter 'graphitewriter' do
 	  library 'library'
 	  host 'host address'
-	  port 'port'
+	  port 1234
 	end
 
 Above LWRP resource will create an icinga `GraphiteWriter` config object.
@@ -1260,7 +1276,7 @@ LWRP `idomysqlconnection` creates an icinga `IdoMySqlConnection` object.
 	icinga2_idomysqlconnection 'idomysqlconnection' do
 	  library 'library'
 	  host 'host address'
-	  port 'port'
+	  port 1234
 	  user 'user name'
 	  password 'password'
 	  database 'database name'
@@ -1297,7 +1313,7 @@ LWRP `idopgsqlconnection` creates an icinga `IdoPgSqlConnection` object.
 	icinga2_idopgsqlconnection 'idopgsqlconnection' do
 	  library 'library'
 	  host 'host address'
-	  port 'port'
+	  port 1234
 	  user 'user name'
 	  password 'password'
 	  database 'database name'
@@ -1812,7 +1828,7 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 ## Cookbook Core Attributes
 
-* `default['icinga2']['version']` (default: `2.3.3-1`): icinga2 version
+* `default['icinga2']['version']` (default: `calculated`): icinga2 version
 
 * `default['icinga2']['conf_dir']` (default: `/etc/icinga2`): icinga2 configuration location
 
@@ -1995,7 +2011,7 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 ## Cookbook Classic UI CGI Core Attributes
 
-* `default['icinga2']['classic_ui']['version']` (default: `2.3.3-1`): icinga2 classic-ui package version
+* `default['icinga2']['classic_ui']['version']` (default: `calculated`): icinga2 classic-ui package version
 
 * `default['icinga2']['classic_ui']['gui_version']` (default: `1.12.2-0`): icinga2 gui package version
 
