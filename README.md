@@ -1,12 +1,16 @@
 icinga2 Cookbook
 ==================
 
+[![Cookbook](http://img.shields.io/badge/cookbook-v2.6.5-green.svg)](https://github.com/icinga/chef-icinga2)
+
 This is a [Chef] cookbook to manage [Icinga2] using Chef LWRP.
 
 
 More features and attributes will be added over time, **feel free to contribute**
 what you find missing!
 
+
+>> For Production environment, always prefer the [most recent release](https://supermarket.chef.io/cookbooks/icinga2).
 
 ## Repository
 
@@ -21,6 +25,20 @@ https://supermarket.chef.io/cookbooks/icinga2
 ## Issue Tracking
 
 For issue reporting or any discussion regarding this cookbook, open an issue at [Dev Icinga]. New users need to [Register] first.
+
+
+## Supported Icinga Version
+
+This cookbook is being developed for Icinga2 - v2.2.x primarily on Amazon Platform (EPEL Release 6 Package).
+
+
+## Supported Icinga2 Install Types
+
+Currently Icinga2 installation is supported **ONLY** via Repository Packages, as it is a recommended best practice.
+
+## Chef Requirement
+
+This cookbook requires Chef Version 11.x or above.
 
 
 ## Contributing
@@ -138,22 +156,12 @@ For issue reporting or any discussion regarding this cookbook, open an issue at 
 
 
 
-## Supported Icinga Version
-
-This cookbook is being developed for Icinga2 - v2.2.x primarily on Amazon Platform (EPEL Release 6 Package).
-
-
-## Supported Icinga2 Install Types
-
-Currently Icinga2 installation is supported **ONLY** via Repository Packages, as it is a recommended best practice.
-
-
 ## Icinga2 Server Setup
 
 To setup icinga2 server on a node, add recipe `icinga2::server` which will install necessary packages and configuration files.
 
 
-## Icing2 with PNP4Nagios
+## Icinga2 with PNP4Nagios
 
 Recipe `icinga2::server_pnp` setup and configures `PNP4Nagios` along with `rrdtool`.
 
@@ -351,7 +359,7 @@ e.g.
 	end
 
 
-For more details about nodes attributes, check LWRP `environment` object tempalte.
+For more details about nodes attributes, check LWRP `environment` object template.
 
 >> Like `env_resources`, user can also define custom template for LWRP `environment` using attribute `cookbook` and `template`.
 
@@ -438,6 +446,7 @@ Currently icinga2 cookbook supports below Objects LWRP Resources:
 - icinga2_notification
 - icinga2_notificationcommand
 - icinga2_scheduleddowntime
+- icinga2_script
 - icinga2_service
 - icinga2_servicegroup
 - icinga2_sysloglogger
@@ -449,7 +458,6 @@ Currently icinga2 cookbook supports below Objects LWRP Resources:
 - icinga2_statusdatawriter
 - icinga2_compatlogger
 - icinga2_checkresultreader
-- icinga2_checkercomponent
 - icinga2_notificationcomponent
 - icinga2_filelogger
 - icinga2_perfdatawriter
@@ -595,7 +603,7 @@ Above LWRP resource will create `Host` objects for a chef environment nodes for 
 - *enable_cluster_hostgroup* (optional, TrueClass/FalseClass)	- whether to create `HostGroup` objects for chef node cluster's
 - *enable_application_hostgroup* (optional, TrueClass/FalseClass)	- whether to create `HostGroup` objects for chef node application's
 - *enable_role_hostgroup* (optional, TrueClass/FalseClass)	- whether to create `HostGroup` objects for chef node run_list role
-- *host_display_name_attr* (optional, String)	- whether to use `hostname` or `fqdn` for Host Object attribute `display_name`, options: hostname fqdn
+- *host_display_name_attr* (optional, String)	- whether to use `hostname` or `fqdn` or `name` (chef node name) for Host Object attribute `display_name`, options: hostname fqdn name
 - *use_fqdn_resolv* (optional, TrueClass/FalseClass)	- whether to use DNS FQDN resolved address for `Host` object attribute `address`
 - *failover_fqdn_address* (optional, TrueClass/FalseClass)	- whether to use chef node attribute `node['ipaddress']` if failed to resolve node FQDN
 - *ignore_resolv_error* (optional, TrueClass/FalseClass)	- whether to ignore node FQDN resolve error
@@ -606,7 +614,8 @@ Above LWRP resource will create `Host` objects for a chef environment nodes for 
 - *limit_region* (optional, TrueClass/FalseClass)	- whether to limit chef node to chef server region, currently tested for Amazon EC2, e.g. a icinga2 server located in region `us-east-1` will only collect nodes located in `us-east-`` region
 - *server_region* (optional, String)	- icinga2 server region can be overridden if cloud provider is not supported by the cookbook using this attribute
 - *add_cloud_custom_vars* (optional, TrueClass/FalseClass)	- whether to add cloud attributes, currently supports amazon ec2, e.g. instance id, vpc subnet etc.
-- *env_filter_node_vars* (optional, Hash)	- filter or match chef nodes for a given `Hash` attribute values
+- *env_filter_node_vars* (optional, Hash)	- filter or match chef nodes for a given `Hash` attribute key value pairs
+- *env_skip_node_vars* (optional, Hash)	- ignore chef nodes for a given `Hash` attribute key value pairs
 - *import* (optional, String)	- icinga `Host` object import template attribute
 - *check_command* (optional, String)	- icinga `Host` object attribute `check_command`
 - *max_check_attempts* (optional, Integer)	- icinga `Host` object attribute `max_check_attempts`
@@ -724,7 +733,7 @@ Above LWRP resource will create an icinga `Host` template - `generic-host`.
 - *icon_image* (optional, String)	- icinga `Host` object attribute `icon_image`
 - *icon_image_alt* (optional, String)	- icinga `Host` object attribute `icon_image_alt`
 - *custom_vars* (optional, String)	- icinga `Host` object attribute `vars`
-- *tempalte* (optional, String)	- whether to create a `Host` template
+- *template* (optional, TrueClass/FalseClass)	- whether to create a `Host` template
 
 
 ## LWRP icinga2_hostgroup
@@ -815,7 +824,7 @@ Above LWRP resource will create an icinga `Service` template object for a `gener
 - *icon_image* (optional, String)	- icinga `Service` object attribute `icon_image`
 - *icon_image_alt* (optional, String)	- icinga `Service` object attribute `icon_image_alt`
 - *custom_vars* (optional, Hash)	- icinga `Service` object attribute `vars`
-- *tempalte* (optional, TrueClass/FalseClass)	- whether to create a `Service` template
+- *template* (optional, TrueClass/FalseClass)	- whether to create a `Service` template
 
 
 ## LWRP icinga2_applyservice
@@ -1157,6 +1166,7 @@ Above LWRP resource will create an icinga `CheckCommand` object.
 - *zone* (optional, String)	- icinga `CheckCommand` attribute `zone`
 - *arguments* (optional, Hash)	- icinga `CheckCommand` attribute `arguments`
 - *custom_vars* (optional, Hash)	- icinga `CheckCommand` attribute `custom_vars`
+- *template* (optional, TrueClass/FalseClass) - whether to create a `CheckCommand` template
 
 
 ## LWRP icinga2_scheduleddowntime
@@ -1190,6 +1200,30 @@ Above LWRP resource will create an icinga `ScheduledDowntime` object.
 - *zone* (optional, String)	- icinga `ScheduledDowntime` attribute `zone`
 - *ranges* (optional, Hash)	- icinga `ScheduledDowntime` attribute `ranges`
 - *template* (optional, TrueClass/FalseClass)	- whether to create an icinga `ScheduledDowntime` template
+
+
+## LWRP icinga2_script
+
+
+LWRP `script` creates a template resource file script under `node['icinga2']['scripts_dir']`. This resource is optional and not necessary applicable to all scenarios.
+
+
+**LWRP script example**
+
+	icinga2_script 'mail-host-notification-custom.sh' do
+	  cookbook 'wrapper_cookbook'
+	  source 'mail-host-notification-custom.sh.erb'
+	end
+
+Above LWRP resource will create a script file under `node['icinga2']['scripts_dir']/mail-host-notification-custom.sh` using template `mail-host-notification-custom.sh.erb` from cookbook `wrapper_cookbook`.
+
+
+**LWRP Options**
+
+- *action* (optional)	- default :enable, options: :enable, :disable
+- *source* (optional, String)	- default :name, template resource attribute `source`
+- *cookbook* (required, String)	- template resource attribute `cookbook`
+- *variables* (optional, Hash)	- template resource attribute `variables`
 
 
 ## LWRP icinga2_externalcommandlistener
@@ -1637,32 +1671,12 @@ Above LWRP resource will create an icinga `CheckResultReader` object.
 
 
 
-## LWRP icinga2_checkercomponent
-
-LWRP `checkercomponent` creates an icinga `CheckerComponent` object.
-
-
-**LWRP CheckerComponent example**
-
-	icinga2_checkercomponent 'checkercomponent'
-
-
-Above LWRP resource will create an icinga `CheckerComponent` object.
-
-
-**LWRP Options**
-
-- *action* (optional)	- default :enable, options: :enable, :disable
-- *library* (optional, String)	- default checker, icinga `CheckerComponent` Object `library`
-
-
-
 ## LWRP icinga2_notificationcomponent
 
 LWRP `notificationcomponent` creates an icinga `NotificationComponent` object.
 
 
-**LWRP CheckerComponent example**
+**LWRP NotificationComponent example**
 
 	icinga2_notificationcomponent 'notificationcomponent' do
 	end
@@ -1673,9 +1687,9 @@ Above LWRP resource will create an icinga `NotificationComponent` object.
 
 **LWRP Options**
 
-- *action* (optional)	- default :enable, options: :enable, :disable
+- *action* (optional)	- default :create, options: :create, :delete
 - *library* (optional, String)	- default notification, icinga `NotificationComponent` Object `library`
-- *enable_ha* (optional, String)	- default checker, icinga `NotificationComponent` attribute `enable_ha`
+- *enable_ha* (optional, String)	- icinga `NotificationComponent` attribute `enable_ha`
 
 
 ## LWRP icinga2_filelogger
@@ -1683,7 +1697,7 @@ Above LWRP resource will create an icinga `NotificationComponent` object.
 LWRP `filelogger` creates an icinga `FileLogger` object.
 
 
-**LWRP CheckerComponent example**
+**LWRP FileLogger example**
 
 	icinga2_filelogger 'filelogger' do
 	end
@@ -1694,8 +1708,8 @@ Above LWRP resource will create an icinga `FileLogger` object.
 
 **LWRP Options**
 
-- *action* (optional)	- default :enable, options: :enable, :disable
-- *path* (optional, String)	- default checker, icinga `FileLogger` attribute `path`
+- *action* (optional)	- default :create, options: :create, :delete
+- *path* (optional, String)	- icinga `FileLogger` attribute `path`
 - *severity* (optional, String)	- icinga `FileLogger` attribute `severity`
 
 
@@ -1721,8 +1735,8 @@ Above LWRP resource will create an icinga `PerfdataWriter` object.
 
 - *action* (optional)	- default :enable, options: :enable, :disable
 - *library* (optional, String)	- default perfdata, icinga `PerfdataWriter` Object `library`
-- *host_perfdata_path* (optional, String)	- default checker, icinga `PerfdataWriter` attribute  `host_perfdata_path`
-- *service_perfdata_path* (optional, String)	- default checker, icinga `PerfdataWriter` attribute  `service_perfdata_path`
+- *host_perfdata_path* (optional, String)	- icinga `PerfdataWriter` attribute  `host_perfdata_path`
+- *service_perfdata_path* (optional, String)	- icinga `PerfdataWriter` attribute  `service_perfdata_path`
 - *host_temp_path* (optional, String)	- icinga `PerfdataWriter` attribute `host_temp_path`
 - *service_temp_path* (optional, String)	- icinga `PerfdataWriter` attribute `service_temp_path`
 - *host_format_template* (optional, String)	- icinga `PerfdataWriter` attribute `host_format_template`
@@ -1810,7 +1824,7 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 * `default['icinga2']['limit_region']` (default: `true`): whether to limit monitoring to icinga2 server region, e.g. for ec2 collect nodes belongs to same region
 
-* `default['icinga2']['host_display_name_attr']` (default: `hostname`): whether to use `hostname` or `fqdn` for environment resource Host Object attribute `display_name`, options: hostname fqdn
+* `default['icinga2']['host_display_name_attr']` (default: `hostname`): whether to use `hostname` or `fqdn` or `name` (chef node name) for environment resource Host Object attribute `display_name`, options: hostname fqdn
 
 * `default['icinga2']['use_fqdn_resolv']` (default: `false`): whether to determine node `address` from fqdn
 
@@ -2013,7 +2027,7 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 * `default['icinga2']['classic_ui']['version']` (default: `calculated`): icinga2 classic-ui package version
 
-* `default['icinga2']['classic_ui']['gui_version']` (default: `1.12.2-0`): icinga2 gui package version
+* `default['icinga2']['classic_ui']['gui_version']` (default: `1.13.2-0`): icinga2 gui package version
 
 * `default['icinga2']['classic_ui']['web_root']` (default: `/usr/share/icinga`): icinga2 web doc root directory location
 

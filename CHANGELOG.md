@@ -3,6 +3,39 @@ icinga2 CHANGELOG
 
 This file is used to list changes made in each version of the icinga2 cookbook.
 
+2.6.5
+-----
+
+- Virender Khatri - Bug #9724, unable to create checkcommand templates via the cookbook
+
+- Virender Khatri - Feature #9737, Add a note for Production Environment Usage
+
+- Virender Khatri - Bug #9738, enable ITL for resource eventcommand
+
+- Virender Khatri - Bug #9764, enable ITL for resource notificationcommand
+
+- Virender Khatri - Bug #9805, udpate resources to match all possible values for resource.action
+
+- Virender Khatri - Bug #9807, Documentation change - icinga2_script says cookbook optional but it is mandatory
+
+- Virender Khatri - Bug #9809, bump icinga2 version to v2.3.8-1 and 1.13.3-0
+
+2.5.7
+-----
+
+- Virender Khatri - Feature #9638, bump icingaweb2 release to v2.0.0-rc1
+
+- Virender Khatri - Feature #9639, bump icinga2 version to v2.3.7
+
+2.5.5
+-----
+
+- Martin Stiborsky - Feature #9492, Node name added as a option for host display name for environment resource
+
+- Virender Khatri - Bug #9488, evaluate string for icinga2 function
+
+- Virender Khatri - Bug #9488, Functions as Custom Attribute doesnt work with custom_vars for checkcommand resource
+
 2.5.2
 -----
 

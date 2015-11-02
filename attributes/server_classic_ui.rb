@@ -1,3 +1,4 @@
+# https://wiki.icinga.org/display/howtos/Setting+up+Icinga+Classic+UI+Standalone
 
 default['icinga2']['classic_ui']['enable'] = true
 # in favour of existing users for rhel
@@ -7,12 +8,12 @@ default['icinga2']['classic_ui']['apache_conf'] = value_for_platform(
 )
 
 if node['platform_family'] == 'debian'
-  default['icinga2']['classic_ui']['version'] = '2.3.5-1'
+  default['icinga2']['classic_ui']['version'] = '2.3.10-1'
 else
-  default['icinga2']['classic_ui']['version'] = '2.3.5-1'
+  default['icinga2']['classic_ui']['version'] = '2.3.10-1'
 end
 
-default['icinga2']['classic_ui']['gui_version'] = '1.13.2-0'
+default['icinga2']['classic_ui']['gui_version'] = '1.13.3-0'
 default['icinga2']['classic_ui']['web_root'] = value_for_platform(
   %w(centos redhat fedora amazon) => { 'default' => '/usr/share/icinga' },
   %w(debian ubuntu) => { 'default' => '/usr/share/icinga2/classicui' }
@@ -65,14 +66,6 @@ default['icinga2']['classic_ui']['cgi']['notes_url_target'] = 'main'
 default['icinga2']['classic_ui']['cgi']['use_authentication'] = 1
 default['icinga2']['classic_ui']['cgi']['use_ssl_authentication'] = 0
 default['icinga2']['classic_ui']['cgi']['lowercase_user_name'] = 0
-default['icinga2']['classic_ui']['cgi']['authorized_for_system_information'] = node['icinga2']['classic_ui']['authorized_for_system_information'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_configuration_information'] = node['icinga2']['classic_ui']['authorized_for_configuration_information'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_full_command_resolution'] = node['icinga2']['classic_ui']['authorized_for_full_command_resolution'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_system_commands'] = node['icinga2']['classic_ui']['authorized_for_system_commands'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_all_services'] = node['icinga2']['classic_ui']['authorized_for_all_services'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_all_hosts'] = node['icinga2']['classic_ui']['authorized_for_all_hosts'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_all_service_commands'] = node['icinga2']['classic_ui']['authorized_for_all_service_commands'].join(',')
-default['icinga2']['classic_ui']['cgi']['authorized_for_all_host_commands'] = node['icinga2']['classic_ui']['authorized_for_all_host_commands'].join(',')
 default['icinga2']['classic_ui']['cgi']['show_all_services_host_is_authorized_for'] = 1
 default['icinga2']['classic_ui']['cgi']['show_partial_hostgroups'] = 0
 default['icinga2']['classic_ui']['cgi']['show_partial_servicegroups'] = 0
